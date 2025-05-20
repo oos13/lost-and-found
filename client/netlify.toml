@@ -1,0 +1,5 @@
+# netlify.toml
+[[redirects]]
+  from = "/api/*"
+  to = "https://lost-and-found-lyxt.onrender.com/api/:splat"
+  status = 200
