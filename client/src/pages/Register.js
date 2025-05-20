@@ -16,118 +16,59 @@ function Register() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
     setError('');
     setSuccess('');
-  };
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { fullName, email, schoolId, password, confirmPassword } = formData;
-
-    if (!fullName || !email || !schoolId || !password || !confirmPassword) {
-      return setError('Please fill in all fields.');
-    }
-
-    if (!validateEmail(email)) {
-      return setError('Invalid email address.');
-    }
-
-    if (password.length < 6) {
-      return setError('Password must be at least 6 characters.');
-    }
-
-    if (password !== confirmPassword) {
-      return setError('Passwords do not match.');
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
     }
 
     try {
-      await axios.post('/api/auth/register', {
-        fullName,
-        email,
-        schoolId,
-        password
-      });
-
-      setSuccess('Registration successful. Redirecting to login...');
+      await axios.post('/api/auth/register', formData);
+      setSuccess('Registration successful! Redirecting to login...');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed.');
+      console.error(err);
+      setError('Registration failed. Please try again.');
     }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <h2>Register</h2>
+    <div className="container mt-5" style={{ maxWidth: '600px' }}>
+      <h2 className="mb-4 text-center">Register</h2>
+
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label>Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            className="form-control"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            className="form-control"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label>School ID</label>
-          <input
-            type="text"
-            name="schoolId"
-            className="form-control"
-            value={formData.schoolId}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            className="form-control"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Register</button>
+
+      <form onSubmit={handleRegister} className="card p-4 shadow-sm">
+        <label>Full Name</label>
+        <input className="form-control" type="text" name="fullName" value={formData.fullName} onChange={handleChange} required />
+
+        <label className="mt-3">Email</label>
+        <input className="form-control" type="email" name="email" value={formData.email} onChange={handleChange} required />
+
+        <label className="mt-3">School ID</label>
+        <input className="form-control" type="text" name="schoolId" value={formData.schoolId} onChange={handleChange} required />
+
+        <label className="mt-3">Password</label>
+        <input className="form-control" type="password" name="password" value={formData.password} onChange={handleChange} required />
+
+        <label className="mt-3">Confirm Password</label>
+        <input className="form-control" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+
+        <button type="submit" className="btn btn-primary mt-3">Register</button>
       </form>
 
-      <div className="text-center mt-3">
-        <p>Already registered?</p>
-        <Link to="/login" className="btn btn-outline-secondary">
-          Login
-        </Link>
-      </div>
+      <p className="mt-3 text-center">
+        Already have an account? <Link to="/login">Login here</Link>.
+      </p>
     </div>
   );
 }
 
 export default Register;
-
-

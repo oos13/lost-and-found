@@ -37,148 +37,100 @@ function AdminClaims() {
       });
       fetchClaims();
     } catch (err) {
-      console.error(`Failed to update claim:`, err);
-    }
-  };
-
-  const confirmPickup = async (id) => {
-    try {
-      await axios.put(`/api/claims/${id}/pickup`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      fetchClaims();
-    } catch (err) {
-      console.error('Failed to confirm pickup:', err);
-    }
-  };
-
-  const deleteClaim = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this claim?')) return;
-    try {
-      await axios.delete(`/api/claims/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchClaims();
-    } catch (err) {
-      console.error('Failed to delete claim:', err);
+      console.error(`Failed to ${decision} claim:`, err);
     }
   };
 
   return (
     <div className="container mt-4">
-      <h2>All Claims (Admin View)</h2>
+      <h2 className="mb-4">All Claims</h2>
 
-      <div className="btn-group mb-3" role="group">
-        {['', 'pending', 'approved', 'rejected', 'contested'].map((status) => (
-          <button
-            key={status}
-            className={`btn btn-outline-primary ${statusFilter === status ? 'active' : ''}`}
-            onClick={() => setStatusFilter(status)}
+      <div className="row mb-3">
+        <div className="col-md-4">
+          <select
+            className="form-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
           >
-            {status === '' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="contested">Contested</option>
+          </select>
+        </div>
+        <div className="col-md-2">
+          <button className="btn btn-primary w-100" onClick={fetchClaims}>
+            Apply Filter
           </button>
-        ))}
+        </div>
       </div>
 
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Item Type</th>
-            <th>Color</th>
-            <th>Brand</th>
-            <th>Status</th>
-            <th>Match Score</th>
-            <th>Submitted</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {claims.map((claim) => (
-            <React.Fragment key={claim._id}>
+      <div className="card p-3 shadow-sm">
+        <div className="table-responsive">
+          <table className="table table-striped table-hover table-bordered">
+            <thead className="table-light">
               <tr>
-                <td>{claim.user?.fullName || 'Unknown'}</td>
-                <td>{claim.type}</td>
-                <td>{claim.color}</td>
-                <td>{claim.brand}</td>
-                <td>{claim.status}</td>
-                <td>{claim.matchScore ?? 'N/A'}</td>
-                <td>{new Date(claim.createdAt).toLocaleString()}</td>
-                <td>
-                  <button className="btn btn-sm btn-link" onClick={() => handleExpand(claim._id)}>
-                    {expandedClaimId === claim._id ? 'Hide' : 'Details'}
-                  </button>
-                </td>
+                <th>Claimant</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Actions</th>
               </tr>
-              {expandedClaimId === claim._id && (
-                <tr>
-                  <td colSpan="8">
-                    <div className="p-3 bg-light rounded">
-                      <p><strong>Size:</strong> {claim.size}</p>
-                      <p><strong>Serial Number:</strong> {claim.serialNumber || '—'}</p>
-                      <p><strong>Location Lost:</strong> {claim.locationLost}</p>
-                      <p><strong>Tags:</strong> {claim.tags?.join(', ') || '—'}</p>
-                      <p><strong>Details:</strong> {claim.details}</p>
-                      {claim.item && (
-                        <>
-                          <hr />
-                          <p><strong>Matched Item:</strong></p>
-                          <p><strong>Found at:</strong> {claim.item.locationFound}</p>
-                          <p><strong>Found on:</strong> {new Date(claim.item.dateFound).toLocaleDateString()}</p>
-                        </>
-                      )}
-
-                      {claim.status === 'pending' && (
-                        <div className="mt-3">
-                          <button className="btn btn-success btn-sm me-2" onClick={() => updateStatus(claim._id, 'approved')}>Approve</button>
-                          <button className="btn btn-danger btn-sm me-2" onClick={() => updateStatus(claim._id, 'rejected')}>Reject</button>
-                          <button className="btn btn-warning btn-sm me-2" onClick={() => updateStatus(claim._id, 'contested')}>Contest</button>
-                        </div>
-                      )}
-
-                      {claim.status === 'approved' && !claim.pickedUp && (
-                        <div className="mt-3">
-                          <button className="btn btn-outline-success btn-sm" onClick={() => confirmPickup(claim._id)}>
-                            Confirm Pickup
-                          </button>
-                        </div>
-                      )}
-
-                      {claim.pickedUp && (
-                        <p className="text-success mt-3">
-                          ✅ Item picked up on {new Date(claim.pickedUpAt).toLocaleString()}
-                        </p>
-                      )}
-
-                      <div className="mt-3">
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() => deleteClaim(claim._id)}
-                        >
-                          Delete Claim
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {claims.map((claim) => (
+                <React.Fragment key={claim._id}>
+                  <tr>
+                    <td>{claim.user?.fullName}</td>
+                    <td>{claim.item?.type} - {claim.item?.color}</td>
+                    <td>{claim.status}</td>
+                    <td>{new Date(claim.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-primary me-1"
+                        onClick={() => updateStatus(claim._id, 'approved')}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger me-1"
+                        onClick={() => updateStatus(claim._id, 'rejected')}
+                      >
+                        Reject
+                      </button>
+                      <button
+                        className="btn btn-sm btn-secondary me-1"
+                        onClick={() => updateStatus(claim._id, 'contested')}
+                      >
+                        Contest
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-dark"
+                        onClick={() => handleExpand(claim._id)}
+                      >
+                        {expandedClaimId === claim._id ? 'Hide' : 'Details'}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedClaimId === claim._id && (
+                    <tr>
+                      <td colSpan="5">
+                        <strong>Description:</strong> {claim.description}<br />
+                        <strong>Tags:</strong> {claim.tags?.join(', ')}<br />
+                        <strong>Serial #:</strong> {claim.serialNumber || 'N/A'}<br />
+                        <strong>Claimed Location:</strong> {claim.locationLost}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default AdminClaims;
-
-
-
-
-
-
-
-
-

@@ -33,46 +33,32 @@ function Dashboard() {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 mb-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>My Claims</h2>
-        <button className="btn btn-outline-danger" onClick={handleLogout}>Logout</button>
+        <h2 className="mb-0">My Claims</h2>
+        <button className="btn btn-outline-light" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-      {claims.length === 0 ? (
-        <p>You haven't submitted any claims yet.</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-bordered">
-            <thead className="thead-light">
-              <tr>
-                <th>Item Type</th>
-                <th>Color</th>
-                <th>Brand</th>
-                <th>Status</th>
-                <th>Match Score</th>
-                <th>Submitted</th>
-              </tr>
-            </thead>
-            <tbody>
-              {claims.map((claim) => (
-                <tr key={claim._id}>
-                  <td>{claim.type}</td>
-                  <td>{claim.color}</td>
-                  <td>{claim.brand}</td>
-                  <td>{claim.status}</td>
-                  <td>{claim.matchScore || 'N/A'}</td>
-                  <td>{new Date(claim.createdAt).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+
+      <div className="card p-3 shadow-sm mt-3">
+        {claims.length === 0 ? (
+          <p>You haven’t submitted any claims yet.</p>
+        ) : (
+          <ul className="list-group">
+            {claims.map((claim) => (
+              <li key={claim._id} className="list-group-item">
+                <strong>Item:</strong> {claim.item?.type} - {claim.item?.color}<br />
+                <strong>Status:</strong> {claim.status}<br />
+                <strong>Submitted:</strong> {new Date(claim.createdAt).toLocaleDateString()}<br />
+                <strong>Description:</strong> {claim.description}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
 
 export default Dashboard;
-
-
-  

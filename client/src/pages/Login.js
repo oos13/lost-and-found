@@ -18,64 +18,40 @@ function Login() {
         password
       });
 
-      const { user } = res.data;
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-
-      if (user.role === 'admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/dashboard');
-    }
+      if (res.data.user.role === 'admin') {
+        navigate('/admin/Dashboard');
+      } else {
+        navigate('/dashboard');
+}
     } catch (err) {
-      setFeedback(err.response?.data?.error || 'Login failed.');
+      console.error(err);
+      setFeedback('Login failed. Please check your credentials.');
     }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <h2>Login</h2>
+      <h2 className="mb-4 text-center">Login</h2>
+
       {feedback && <div className="alert alert-danger">{feedback}</div>}
-      <form onSubmit={handleLogin}>
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Login</button>
+
+      <form onSubmit={handleLogin} className="card p-4 shadow-sm">
+        <label>Email</label>
+        <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+
+        <label className="mt-3">Password</label>
+        <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+        <button type="submit" className="btn btn-primary mt-3">Login</button>
       </form>
 
-      <div className="text-center mt-3">
-        <p>Don’t have an account?</p>
-        <Link to="/register" className="btn btn-outline-secondary">
-          Register
-        </Link>
-      </div>
+      <p className="mt-3 text-center">
+        Don’t have an account? <Link to="/register">Register here</Link>.
+      </p>
     </div>
   );
 }
 
 export default Login;
-
-
-
-
-
-
-
-  

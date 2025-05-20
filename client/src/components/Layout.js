@@ -13,8 +13,8 @@ function Layout() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light px-4">
-        <Link className="navbar-brand" to="/dashboard">Lost & Found</Link>
+      <nav className="navbar navbar-expand-lg custom-navbar px-4">
+        <Link className="navbar-brand text-white" to="/dashboard">Lost & Found</Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -51,7 +51,7 @@ function Layout() {
                   <Link className="nav-link" to="/admin/claims">All Claims</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/admin/users">Manage Users</Link>
+                  <Link className="nav-link" to="/admin/users">Manage Users</Link>
                 </li>
               </>
             )}
@@ -59,8 +59,8 @@ function Layout() {
 
           {user && (
             <div className="d-flex align-items-center gap-3">
-              <span className="me-3 text-muted">{user.fullName}</span>
-              <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>Logout</button>
+              <span className="me-3 text-white">{user.fullName}</span>
+              <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Logout</button>
             </div>
           )}
         </div>
@@ -74,7 +74,3 @@ function Layout() {
 }
 
 export default Layout;
-
-
-
-

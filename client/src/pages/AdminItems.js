@@ -14,7 +14,6 @@ function AdminItems() {
     tags: '',
     photo: null
   });
-  const [feedback, setFeedback] = useState('');
   const token = localStorage.getItem('token');
 
   const fetchItems = useCallback(async () => {
@@ -43,23 +42,18 @@ function AdminItems() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = new FormData();
-    for (let key in formData) {
-      if (key === 'tags') {
-        form.append('tags', JSON.stringify(formData.tags.split(',').map(t => t.trim().toLowerCase())));
-      } else {
-        form.append(key, formData[key]);
-      }
-    }
-
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, val]) =>
+      data.append(key, val)
+    );
     try {
-      await axios.post('/api/items', form, {
+      await axios.post('/api/items', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-      setFeedback('Item logged successfully!');
+      fetchItems();
       setFormData({
         type: '',
         color: '',
@@ -71,16 +65,14 @@ function AdminItems() {
         tags: '',
         photo: null
       });
-      fetchItems();
     } catch (err) {
       console.error(err);
-      setFeedback('Failed to log item.');
     }
   };
 
-  const toggleClaimed = async (id, claimed) => {
+  const markClaimed = async (id, claimed) => {
     try {
-      await axios.put(`/api/items/${id}`, { claimed: !claimed }, {
+      await axios.put(`/api/items/${id}`, { claimed }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchItems();
@@ -102,71 +94,103 @@ function AdminItems() {
 
   return (
     <div className="container mt-4">
-      <h2>Admin Item Management</h2>
-      {feedback && <div className="alert alert-info">{feedback}</div>}
+      <h2 className="mb-4">Admin Item Management</h2>
 
-      <form onSubmit={handleSubmit} className="mb-5">
-        <div className="row">
-          {['type', 'color', 'brand', 'size', 'serialNumber', 'locationFound', 'description', 'tags'].map((field) => (
-            <div className="col-md-6 mb-3" key={field}>
-              <label className="form-label">{field}</label>
-              <input
-                type="text"
-                name={field}
-                className="form-control"
-                value={formData[field]}
-                onChange={handleInputChange}
-              />
-            </div>
-          ))}
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Photo</label>
-            <input type="file" className="form-control" onChange={handleFileChange} />
-          </div>
+      <form onSubmit={handleSubmit} className="row g-3 mb-4">
+        <div className="col-md-6 mb-2">
+          <label>Type</label>
+          <input type="text" className="form-control" name="type" value={formData.type} onChange={handleInputChange} />
         </div>
-        <button type="submit" className="btn btn-primary">Log Item</button>
+        <div className="col-md-6 mb-2">
+          <label>Color</label>
+          <input type="text" className="form-control" name="color" value={formData.color} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Brand</label>
+          <input type="text" className="form-control" name="brand" value={formData.brand} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Size</label>
+          <input type="text" className="form-control" name="size" value={formData.size} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Serial Number</label>
+          <input type="text" className="form-control" name="serialNumber" value={formData.serialNumber} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Location Found</label>
+          <input type="text" className="form-control" name="locationFound" value={formData.locationFound} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Description</label>
+          <input type="text" className="form-control" name="description" value={formData.description} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-6 mb-2">
+          <label>Tags</label>
+          <input type="text" className="form-control" name="tags" value={formData.tags} onChange={handleInputChange} />
+        </div>
+        <div className="col-md-12 mb-2">
+          <label>Photo</label>
+          <input type="file" className="form-control" name="photo" onChange={handleFileChange} />
+        </div>
+        <div className="col-12 d-grid">
+          <button type="submit" className="btn btn-primary">
+            Log Item
+          </button>
+        </div>
       </form>
 
-      <h4>All Logged Items</h4>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Photo</th>
-            <th>Type</th>
-            <th>Color</th>
-            <th>Brand</th>
-            <th>Claimed</th>
-            <th>Found</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(item => (
-            <tr key={item._id}>
-              <td><img src={item.photoUrl} alt="item" style={{ width: '80px' }} /></td>
-              <td>{item.type}</td>
-              <td>{item.color}</td>
-              <td>{item.brand}</td>
-              <td>{item.claimed ? 'Yes' : 'No'}</td>
-              <td>{new Date(item.dateFound).toLocaleString()}</td>
-              <td>
-                <button
-                  className="btn btn-sm btn-outline-success me-2"
-                  onClick={() => toggleClaimed(item._id, item.claimed)}
-                >
-                  {item.claimed ? 'Unmark' : 'Mark Claimed'}
-                </button>
-                <button
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => deleteItem(item._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h4 className="mb-3">All Logged Items</h4>
+
+      <div className="card p-3 shadow-sm mt-2">
+        <div className="table-responsive">
+          <table className="table table-striped table-hover table-bordered">
+            <thead className="table-light">
+              <tr>
+                <th>Photo</th>
+                <th>Type</th>
+                <th>Color</th>
+                <th>Brand</th>
+                <th>Claimed</th>
+                <th>Found</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item._id}>
+                  <td>
+                    {item.photoUrl ? (
+                      <img src={item.photoUrl} alt="item" width="50" />
+                    ) : (
+                      'No Photo'
+                    )}
+                  </td>
+                  <td>{item.type}</td>
+                  <td>{item.color}</td>
+                  <td>{item.brand}</td>
+                  <td>{item.claimed ? 'Yes' : 'No'}</td>
+                  <td>{new Date(item.createdAt).toLocaleString()}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-success me-2"
+                      onClick={() => markClaimed(item._id, !item.claimed)}
+                    >
+                      {item.claimed ? 'Unmark' : 'Mark Claimed'}
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => deleteItem(item._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

@@ -31,36 +31,25 @@ function UserClaims() {
 
   return (
     <div className="container mt-4">
-      <h2>Your Submitted Claims</h2>
+      <h2 className="mb-4">Your Submitted Claims</h2>
       {error && <div className="alert alert-danger">{error}</div>}
-      {claims.length === 0 && !error ? (
-        <p>You haven't submitted any claims yet.</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover mt-3">
-            <thead className="table-light">
-              <tr>
-                <th>Status</th>
-                <th>Item Type</th>
-                <th>Color</th>
-                <th>Brand</th>
-                <th>Submitted On</th>
-              </tr>
-            </thead>
-            <tbody>
-              {claims.map((claim) => (
-                <tr key={claim._id}>
-                  <td>{claim.status}</td>
-                  <td>{claim.type}</td>
-                  <td>{claim.color}</td>
-                  <td>{claim.brand}</td>
-                  <td>{new Date(claim.createdAt).toLocaleDateString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+
+      <div className="card p-3 shadow-sm mt-3">
+        {claims.length === 0 && !error ? (
+          <p>You haven't submitted any claims yet.</p>
+        ) : (
+          <ul className="list-group">
+            {claims.map((claim) => (
+              <li key={claim._id} className="list-group-item">
+                <strong>Item:</strong> {claim.item?.type} - {claim.item?.color}<br />
+                <strong>Status:</strong> {claim.status}<br />
+                <strong>Submitted:</strong> {new Date(claim.createdAt).toLocaleDateString()}<br />
+                <strong>Details:</strong> {claim.description}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
