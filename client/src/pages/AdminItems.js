@@ -98,38 +98,47 @@ function AdminItems() {
 
       <form onSubmit={handleSubmit} className="row g-3 mb-4">
         <div className="col-md-6 mb-2">
-          <label>Type</label>
+          <img src="/type.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
+          <label> Type</label>
           <input type="text" className="form-control" name="type" value={formData.type} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/color.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Color</label>
           <input type="text" className="form-control" name="color" value={formData.color} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/brand.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Brand</label>
           <input type="text" className="form-control" name="brand" value={formData.brand} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/size.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Size</label>
           <input type="text" className="form-control" name="size" value={formData.size} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/serial.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Serial Number</label>
           <input type="text" className="form-control" name="serialNumber" value={formData.serialNumber} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/location.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Location Found</label>
           <input type="text" className="form-control" name="locationFound" value={formData.locationFound} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/description.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Description</label>
           <input type="text" className="form-control" name="description" value={formData.description} onChange={handleInputChange} />
         </div>
         <div className="col-md-6 mb-2">
+          <img src="/tags.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Tags</label>
           <input type="text" className="form-control" name="tags" value={formData.tags} onChange={handleInputChange} />
         </div>
         <div className="col-md-12 mb-2">
+          <img src="/photo.png" alt="Icon" width="24" height="24" style={{ marginRight: '8px' }}/>
           <label>Photo</label>
           <input type="file" className="form-control" name="photo" onChange={handleFileChange} />
         </div>

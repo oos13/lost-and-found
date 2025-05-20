@@ -60,7 +60,9 @@ function Layout() {
           {user && (
             <div className="d-flex align-items-center gap-3">
               <span className="me-3 text-white">{user.fullName}</span>
-              <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Logout</button>
+              <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+                <img src="/logout.png" alt="Icon" width="24" height="24"/>
+              </button>
             </div>
           )}
         </div>

@@ -37,7 +37,7 @@ function Dashboard() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="mb-0">My Claims</h2>
         <button className="btn btn-outline-light" onClick={handleLogout}>
-          Logout
+          <img src="/logout.png" alt="Icon" width="24" height="24" />
         </button>
       </div>
 
