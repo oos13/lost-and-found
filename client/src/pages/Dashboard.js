@@ -14,7 +14,7 @@ function Dashboard() {
         return;
       }
       try {
-        const response = await axios.get('http://localhost:5000/api/claims/my', {
+        const response = await axios.get('/api/claims/my', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setClaims(response.data);

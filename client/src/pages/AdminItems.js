@@ -19,7 +19,7 @@ function AdminItems() {
 
   const fetchItems = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/items', {
+      const res = await axios.get('/api/items', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setItems(res.data);
@@ -53,7 +53,7 @@ function AdminItems() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/items', form, {
+      await axios.post('/api/items', form, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -80,7 +80,7 @@ function AdminItems() {
 
   const toggleClaimed = async (id, claimed) => {
     try {
-      await axios.put(`http://localhost:5000/api/items/${id}`, { claimed: !claimed }, {
+      await axios.put(`/api/items/${id}`, { claimed: !claimed }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchItems();
@@ -91,7 +91,7 @@ function AdminItems() {
 
   const deleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/items/${id}`, {
+      await axios.delete(`/api/items/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchItems();

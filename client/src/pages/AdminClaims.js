@@ -9,7 +9,7 @@ function AdminClaims() {
 
   const fetchClaims = useCallback(async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/claims${statusFilter ? `?status=${statusFilter}` : ''}`, {
+      const res = await axios.get(`/api/claims${statusFilter ? `?status=${statusFilter}` : ''}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,7 +30,7 @@ function AdminClaims() {
 
   const updateStatus = async (id, decision) => {
     try {
-      await axios.put(`http://localhost:5000/api/claims/${id}/decision`, { decision }, {
+      await axios.put(`/api/claims/${id}/decision`, { decision }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,7 @@ function AdminClaims() {
 
   const confirmPickup = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/claims/${id}/pickup`, {}, {
+      await axios.put(`/api/claims/${id}/pickup`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +57,7 @@ function AdminClaims() {
   const deleteClaim = async (id) => {
     if (!window.confirm('Are you sure you want to delete this claim?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/claims/${id}`, {
+      await axios.delete(`/api/claims/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchClaims();

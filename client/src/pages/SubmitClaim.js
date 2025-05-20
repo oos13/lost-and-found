@@ -38,7 +38,7 @@ function SubmitClaim() {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/claims', payload, {
+      await axios.post('/api/claims', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -13,8 +13,6 @@ function AdminUsers() {
   });
   const [feedback, setFeedback] = useState('');
 
-//
-
   const fetchUsers = useCallback(async () => {
   try {
     const query = Object.entries(filters)
@@ -22,7 +20,7 @@ function AdminUsers() {
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join('&');
 
-    const res = await axios.get(`http://localhost:5000/api/users?${query}`, {
+    const res = await axios.get(`/api/users?${query}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setUsers(res.data);
@@ -37,7 +35,7 @@ useEffect(() => {
 
   const updateRole = async (id, newRole) => {
     try {
-      await axios.put(`http://localhost:5000/api/users/${id}/role`, { role: newRole }, {
+      await axios.put(`/api/users/${id}/role`, { role: newRole }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFeedback(`User role changed to ${newRole}`);
@@ -52,7 +50,7 @@ useEffect(() => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`, {
+      await axios.delete(`/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFeedback('User deleted');
