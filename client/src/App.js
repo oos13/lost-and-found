@@ -8,7 +8,9 @@ import UserClaims from './pages/UserClaims';
 import AdminClaims from './pages/AdminClaims';
 import AdminItems from './pages/AdminItems';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminUsers from './pages/AdminUsers';
 import Layout from './components/Layout';
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
           <Route path="/admin/claims" element={<AdminClaims />} />
           <Route path="/admin/items" element={<AdminItems />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
       </Routes>
     </Router>

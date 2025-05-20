@@ -312,7 +312,18 @@ router.get('/stats', verifyToken, isAdmin, async (req, res) => {
   }
 });
 
-  
+// Admin-only: Delete a claim
+router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
+  try {
+    const claim = await Claim.findByIdAndDelete(req.params.id);
+    if (!claim) return res.status(404).json({ error: 'Claim not found' });
+
+    res.json({ message: 'Claim deleted successfully' });
+  } catch (err) {
+    console.error('Failed to delete claim:', err);
+    res.status(500).json({ error: 'Failed to delete claim', details: err.message });
+  }
+});
   
   
 

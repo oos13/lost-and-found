@@ -50,6 +50,9 @@ function Layout() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin/claims">All Claims</Link>
                 </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/admin/users">Manage Users</Link>
+                </li>
               </>
             )}
           </ul>

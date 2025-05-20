@@ -18,9 +18,15 @@ function Login() {
         password
       });
 
+      const { user } = res.data;
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
+
+      if (user.role === 'admin') {
+      navigate('/admin/dashboard');
+    } else {
       navigate('/dashboard');
+    }
     } catch (err) {
       setFeedback(err.response?.data?.error || 'Login failed.');
     }

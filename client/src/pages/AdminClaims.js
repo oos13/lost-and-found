@@ -54,6 +54,18 @@ function AdminClaims() {
     }
   };
 
+  const deleteClaim = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this claim?')) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/claims/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchClaims();
+    } catch (err) {
+      console.error('Failed to delete claim:', err);
+    }
+  };
+
   return (
     <div className="container mt-4">
       <h2>All Claims (Admin View)</h2>
@@ -118,16 +130,14 @@ function AdminClaims() {
                         </>
                       )}
 
-                      {/* Pending status: show decision buttons */}
                       {claim.status === 'pending' && (
                         <div className="mt-3">
                           <button className="btn btn-success btn-sm me-2" onClick={() => updateStatus(claim._id, 'approved')}>Approve</button>
                           <button className="btn btn-danger btn-sm me-2" onClick={() => updateStatus(claim._id, 'rejected')}>Reject</button>
-                          <button className="btn btn-warning btn-sm" onClick={() => updateStatus(claim._id, 'contested')}>Contest</button>
+                          <button className="btn btn-warning btn-sm me-2" onClick={() => updateStatus(claim._id, 'contested')}>Contest</button>
                         </div>
                       )}
 
-                      {/* Approved but not picked up: show pickup button */}
                       {claim.status === 'approved' && !claim.pickedUp && (
                         <div className="mt-3">
                           <button className="btn btn-outline-success btn-sm" onClick={() => confirmPickup(claim._id)}>
@@ -136,12 +146,20 @@ function AdminClaims() {
                         </div>
                       )}
 
-                      {/* Already picked up */}
                       {claim.pickedUp && (
                         <p className="text-success mt-3">
                           ✅ Item picked up on {new Date(claim.pickedUpAt).toLocaleString()}
                         </p>
                       )}
+
+                      <div className="mt-3">
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => deleteClaim(claim._id)}
+                        >
+                          Delete Claim
+                        </button>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -155,6 +173,7 @@ function AdminClaims() {
 }
 
 export default AdminClaims;
+
 
 
 
