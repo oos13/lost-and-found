@@ -4,15 +4,20 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 
-const whitelist = ['12345', '67890', '99999']; // Replace with actual valid school IDs
+const isValidSchoolId = (id) => {
+  const num = Number(id);
+  return num >= 10000 && num <= 99999;
+};
+
 
 // Register
 router.post('/register', async (req, res) => {
   const { fullName, email, schoolId, password } = req.body;
 
-  if (!whitelist.includes(schoolId)) {
+  if (!isValidSchoolId(schoolId)) {
     return res.status(400).json({ error: 'School ID not recognized' });
   }
+
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
