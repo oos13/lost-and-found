@@ -32,7 +32,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, );
 
   const {
     totalClaims = 0,
