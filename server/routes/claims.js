@@ -280,6 +280,38 @@ router.get('/my', verifyToken, async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch user claims', details: err.message });
     }
   });
+
+  // Admin-only: Dashboard statistics
+router.get('/stats', verifyToken, isAdmin, async (req, res) => {
+  try {
+    const claims = await Claim.find().select('status createdAt');
+
+    const stats = {
+      totalClaims: claims.length,
+      totalApproved: claims.filter(c => c.status === 'approved').length,
+      totalRejected: claims.filter(c => c.status === 'rejected').length,
+      totalContested: claims.filter(c => c.status === 'contested').length,
+      claimsPerDay: []
+    };
+
+    const counts = {};
+    claims.forEach(claim => {
+      const date = new Date(claim.createdAt).toISOString().split('T')[0];
+      counts[date] = (counts[date] || 0) + 1;
+    });
+
+    stats.claimsPerDay = Object.entries(counts).map(([date, count]) => ({
+      date,
+      count
+    })).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    res.json(stats);
+  } catch (err) {
+    console.error('Failed to compute stats:', err);
+    res.status(500).json({ error: 'Failed to compute stats' });
+  }
+});
+
   
   
   

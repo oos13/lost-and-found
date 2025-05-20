@@ -43,6 +43,7 @@ app.use('/api/claims', claimRoutes);
 const testRoutes = require('./routes/test');
 app.use('/api/test', testRoutes);
 
-// TODO: Add item routes (admin uploads), claim routes, etc.
-// ------------------------
+const adminRoutes = require('./routes/admin');
+app.use('/api/admin', adminRoutes);
+
 

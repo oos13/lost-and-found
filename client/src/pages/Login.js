@@ -1,37 +1,38 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser } = useContext(AuthContext);
+  const [feedback, setFeedback] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setFeedback('');
+
     try {
-      const res = await api.post('/auth/login', { email, password });
-      const { token, user } = res.data;
+      const res = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password
+      });
 
-      // Store token and user info
-      localStorage.setItem('token', token);
-      setUser(user);
-
-      // Redirect after login
-      navigate(user.role === 'admin' ? '/admin-dashboard' : '/dashboard');
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      navigate('/dashboard');
     } catch (err) {
-      alert(err.response?.data?.error || 'Login failed');
+      setFeedback(err.response?.data?.error || 'Login failed.');
     }
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{ maxWidth: '500px' }}>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: '400px' }}>
+      {feedback && <div className="alert alert-danger">{feedback}</div>}
+      <form onSubmit={handleLogin}>
         <div className="mb-3">
-          <label>Email:</label>
+          <label>Email</label>
           <input
             type="email"
             className="form-control"
@@ -40,9 +41,8 @@ function Login() {
             required
           />
         </div>
-
         <div className="mb-3">
-          <label>Password:</label>
+          <label>Password</label>
           <input
             type="password"
             className="form-control"
@@ -51,14 +51,22 @@ function Login() {
             required
           />
         </div>
-
-        <button type="submit" className="btn btn-primary w-100">Log In</button>
+        <button type="submit" className="btn btn-primary w-100">Login</button>
       </form>
+
+      <div className="text-center mt-3">
+        <p>Don’t have an account?</p>
+        <Link to="/register" className="btn btn-outline-secondary">
+          Register
+        </Link>
+      </div>
     </div>
   );
 }
 
 export default Login;
+
+
 
 
 
