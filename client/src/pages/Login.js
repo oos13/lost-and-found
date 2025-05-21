@@ -33,7 +33,9 @@ function Login() {
 
   return (
     <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <h2 className="mb-4 text-center">Login</h2>
+      <h2 className="mb-4 text-center">
+        <img src="/lostandfoundblack.png" alt="Icon" width="400" height="175"/>
+      </h2>
 
       {feedback && <div className="alert alert-danger">{feedback}</div>}
 

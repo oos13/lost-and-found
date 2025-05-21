@@ -14,7 +14,9 @@ function Layout() {
   return (
     <>
       <nav className="navbar navbar-expand-lg custom-navbar px-4">
-        <Link className="navbar-brand text-white" to="/dashboard">Lost & Found</Link>
+        <Link className="navbar-brand text-white" to="/dashboard">
+          <img src="/lostandfound.png" alt="Icon" width="112" height="48" style={{ marginRight: '8px' }}/>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
