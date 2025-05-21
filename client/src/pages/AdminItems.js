@@ -43,9 +43,18 @@ function AdminItems() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    Object.entries(formData).forEach(([key, val]) =>
-      data.append(key, val)
-    );
+    
+    Object.entries(formData).forEach(([key, val]) => {
+        if (key === 'tags') {
+            const tagArray = val
+            .split(',')
+            .map(tag => tag.trim().toLowerCase())
+            .filter(tag => tag);
+            data.append('tags', JSON.stringify(tagArray));
+        } else {
+            data.append(key, val);
+        }
+        });
     try {
       await axios.post('/api/items', data, {
         headers: {
