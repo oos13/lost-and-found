@@ -41,6 +41,33 @@ function AdminClaims() {
     }
   };
 
+  const confirmPickup = async (id) => {
+    try {
+      await axios.put(`/api/claims/${id}/pickup`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchClaims();
+    } catch (err) {
+      console.error('Failed to confirm pickup:', err);
+    }
+  };
+
+  const deleteClaim = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this claim?')) return;
+    try {
+      await axios.delete(`/api/claims/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchClaims();
+    } catch (err) {
+      console.error('Failed to delete claim:', err);
+    }
+  };
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">All Claims</h2>
@@ -83,24 +110,31 @@ function AdminClaims() {
                 <React.Fragment key={claim._id}>
                   <tr>
                     <td>{claim.user?.fullName}</td>
-                    <td>{claim.item?.type} - {claim.item?.color}</td>
+                    <td>
+                      {claim.item?.type} - {claim.item?.color}
+                      {claim.likelyMatch && (
+                        <span className="badge bg-warning text-dark ms-2">
+                          Match Score: {claim.matchScore}
+                        </span>
+                      )}
+                    </td>
                     <td>{claim.status}</td>
                     <td>{new Date(claim.createdAt).toLocaleDateString()}</td>
-                    <td>
+                    <td className="d-flex flex-wrap gap-1">
                       <button
-                        className="btn btn-sm btn-primary me-1"
+                        className="btn btn-sm btn-primary"
                         onClick={() => updateStatus(claim._id, 'approved')}
                       >
                         Approve
                       </button>
                       <button
-                        className="btn btn-sm btn-danger me-1"
+                        className="btn btn-sm btn-danger"
                         onClick={() => updateStatus(claim._id, 'rejected')}
                       >
                         Reject
                       </button>
                       <button
-                        className="btn btn-sm btn-secondary me-1"
+                        className="btn btn-sm btn-secondary"
                         onClick={() => updateStatus(claim._id, 'contested')}
                       >
                         Contest
@@ -110,6 +144,20 @@ function AdminClaims() {
                         onClick={() => handleExpand(claim._id)}
                       >
                         {expandedClaimId === claim._id ? 'Hide' : 'Details'}
+                      </button>
+                      {claim.status === 'approved' && !claim.pickedUp && (
+                        <button
+                          className="btn btn-sm btn-success"
+                          onClick={() => confirmPickup(claim._id)}
+                        >
+                          Confirm Pickup
+                        </button>
+                      )}
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => deleteClaim(claim._id)}
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -134,3 +182,4 @@ function AdminClaims() {
 }
 
 export default AdminClaims;
+
